@@ -56,6 +56,15 @@ const RawMaterial = {
         }
       );
     });
+  },
+
+  query: (sql, params = []) => {
+    return new Promise((resolve, reject) => {
+      pool.query(sql, params, (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
   }
 };
 

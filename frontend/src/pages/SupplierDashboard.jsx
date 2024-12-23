@@ -22,6 +22,8 @@ import {
 } from '@mui/material';
 import api from '../utils/axios.config';
 import AuthService from '../services/auth.service';
+import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const MATERIAL_TYPES = [
   'cotton', 'wool', 'silk', 'linen', 'polyester', 'nylon', 'rayon',
@@ -40,6 +42,7 @@ const SupplierDashboard = () => {
     const userData = AuthService.getCurrentUser();
     return userData?.supplierId;
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!supplierId) {
@@ -91,11 +94,26 @@ const SupplierDashboard = () => {
     }
   };
 
+  const handleLogout = () => {
+    AuthService.logout();
+    navigate('/login');
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Supplier Dashboard
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Typography variant="h4" gutterBottom sx={{ mb: 0 }}>
+          Supplier Dashboard
+        </Typography>
+        <Button 
+          variant="outlined" 
+          color="primary" 
+          startIcon={<LogoutIcon />}
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
+      </Box>
 
       {/* Add New Material Form */}
       <Paper sx={{ p: 3, mb: 4 }}>
@@ -126,7 +144,7 @@ const SupplierDashboard = () => {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Quantity"
+                label="Quantity(in kg)"
                 type="number"
                 value={newMaterial.quantity}
                 onChange={(e) => setNewMaterial({
@@ -181,7 +199,7 @@ const SupplierDashboard = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Material Type</TableCell>
-                <TableCell>Quantity</TableCell>
+                <TableCell>Quantity(in kg)</TableCell>
                 <TableCell>Date Added</TableCell>
               </TableRow>
             </TableHead>

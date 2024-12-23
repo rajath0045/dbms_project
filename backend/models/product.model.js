@@ -84,6 +84,15 @@ const Product = {
         }
       );
     });
+  },
+
+  count: () => {
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT COUNT(*) as count FROM products', (err, results) => {
+        if (err) reject(err);
+        else resolve(results[0].count);
+      });
+    });
   }
 };
 

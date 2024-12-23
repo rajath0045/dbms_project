@@ -77,6 +77,37 @@ const Order = {
         }
       );
     });
+  },
+
+  count: () => {
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT COUNT(*) as count FROM orders', (err, results) => {
+        if (err) reject(err);
+        else resolve(results[0].count);
+      });
+    });
+  },
+
+  findRecent: (limit) => {
+    return new Promise((resolve, reject) => {
+      pool.query(
+        `SELECT o.*, u.username as customer_name 
+         FROM orders o 
+         JOIN users u ON o.customer_id = u.id 
+         ORDER BY o.order_date DESC 
+         LIMIT ?`,
+        [limit]
+      );
+    });
+  },
+
+  query: (sql, params = []) => {
+    return new Promise((resolve, reject) => {
+      pool.query(sql, params, (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
   }
 };
 

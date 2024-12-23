@@ -107,4 +107,38 @@ exports.login = async (req, res) => {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Error during login' });
   }
+};
+
+exports.adminLogin = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findByUsername(username);
+    
+    if (!user || user.role !== 'admin') {
+      return res.status(401).json({ error: 'Invalid admin credentials' });
+    }
+
+    const passwordIsValid = await bcrypt.compare(password, user.password);
+    if (!passwordIsValid) {
+      return res.status(401).json({ error: 'Invalid admin credentials' });
+    }
+
+    const token = jwt.sign(
+      { 
+        id: user.id, 
+        username: user.username, 
+        role: user.role
+      },
+      authConfig.secret,
+      { expiresIn: authConfig.expiresIn }
+    );
+
+    res.json({
+      token,
+      role: user.role
+    });
+  } catch (error) {
+    console.error('Admin login error:', error);
+    res.status(500).json({ error: 'Error during admin login' });
+  }
 }; 

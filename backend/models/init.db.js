@@ -19,7 +19,7 @@ const createTables = () => {
       id INT PRIMARY KEY AUTO_INCREMENT,
       username VARCHAR(255) NOT NULL UNIQUE,
       password VARCHAR(255) NOT NULL,
-      role ENUM('supplier', 'customer') NOT NULL,
+      role ENUM('customer', 'supplier', 'admin') NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;
@@ -104,7 +104,7 @@ const createTables = () => {
     }
     console.log('Users table created successfully');
 
-    // Create customers table after users table is created
+    // Create customers table after users table
     pool.query(createCustomersTable, (err) => {
       if (err) {
         console.error('Error creating customers table:', err);
@@ -112,23 +112,49 @@ const createTables = () => {
       }
       console.log('Customers table created successfully');
 
-      // Create suppliers table after customers table is created
+      // Create suppliers table after customers table
       pool.query(createSuppliersTable, (err) => {
         if (err) {
           console.error('Error creating suppliers table:', err);
           return;
         }
         console.log('Suppliers table created successfully');
+
+        // Create raw materials table after suppliers table
+        pool.query(createRawMaterialsTable, (err) => {
+          if (err) {
+            console.error('Error creating raw_materials table:', err);
+            return;
+          }
+          console.log('Raw materials table created successfully');
+        });
       });
     });
   });
 
-  pool.query(createRawMaterialsTable, (err) => {
+  // Create other tables that don't have dependencies
+  pool.query(createProductsTable, (err) => {
     if (err) {
-      console.error('Error creating raw_materials table:', err);
+      console.error('Error creating products table:', err);
       return;
     }
-    console.log('Raw materials table created successfully');
+    console.log('Products table created successfully');
+  });
+
+  pool.query(createOrdersTable, (err) => {
+    if (err) {
+      console.error('Error creating orders table:', err);
+      return;
+    }
+    console.log('Orders table created successfully');
+
+    pool.query(createOrderItemsTable, (err) => {
+      if (err) {
+        console.error('Error creating order_items table:', err);
+        return;
+      }
+      console.log('Order items table created successfully');
+    });
   });
 };
 

@@ -36,6 +36,33 @@ const Supplier = {
         }
       );
     });
+  },
+
+  count: () => {
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT COUNT(*) as count FROM suppliers', (err, results) => {
+        if (err) reject(err);
+        else resolve(results[0].count);
+      });
+    });
+  },
+
+  query: (sql, params = []) => {
+    return new Promise((resolve, reject) => {
+      pool.query(sql, params, (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
+  },
+
+  delete: (id) => {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM suppliers WHERE sid = ?', [id], (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
   }
 };
 

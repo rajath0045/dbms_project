@@ -17,4 +17,12 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-module.exports = { verifyToken }; 
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    res.status(403).json({ error: 'Requires admin access' });
+  }
+};
+
+module.exports = { verifyToken, isAdmin }; 

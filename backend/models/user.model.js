@@ -56,7 +56,46 @@ const User = {
         }
       );
     });
-  }
+  },
+
+  count: () => {
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT COUNT(*) as count FROM users', (err, results) => {
+        if (err) reject(err);
+        else resolve(results[0].count);
+      });
+    });
+  },
+
+  findRecent: (limit) => {
+    return new Promise((resolve, reject) => {
+      pool.query(
+        'SELECT id, username, role, created_at FROM users ORDER BY created_at DESC LIMIT ?',
+        [limit],
+        (err, results) => {
+          if (err) reject(err);
+          else resolve(results);
+        }
+      );
+    });
+  },
+
+  findByRole: (role) => {
+    return new Promise((resolve, reject) => {
+      pool.query(
+        'SELECT u.*, c.phone, c.address FROM users u LEFT JOIN customers c ON u.id = c.user_id WHERE u.role = ?',
+        [role],
+        (err, results) => {
+          if (err) {
+            console.error('Error finding users by role:', err);
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+  },
 };
 
 module.exports = User; 

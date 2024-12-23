@@ -20,6 +20,8 @@ app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/products', require('./routes/product.routes'));
 app.use('/api/orders', require('./routes/order.routes'));
 app.use('/api/raw-materials', require('./routes/rawMaterial.routes'));
+app.use('/api/admin', require('./routes/admin.routes'));
+
 // Basic route
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the API' });
